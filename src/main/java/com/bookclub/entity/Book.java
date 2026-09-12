@@ -25,8 +25,8 @@ public class Book {
     @Column(name = "is_audio")
     private Boolean isAudio = false;
 
-    @Column
-    private String status;
+    @Enumerated(EnumType.STRING)
+    private BookStatusEnum status = BookStatusEnum.UNREAD;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
@@ -36,30 +36,75 @@ public class Book {
     @JoinColumn(name = "meeting_id")
     private Meeting meeting;
 
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
+    public Long getId() {
+        return id;
+    }
 
-    public String getAuthor() { return author; }
-    public void setAuthor(String author) { this.author = author; }
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-    public String getName() { return name; }
-    public void setName(String name) { this.name = name; }
+    public String getAuthor() {
+        return author;
+    }
 
-    public String getAnnotation() { return annotation; }
-    public void setAnnotation(String annotation) { this.annotation = annotation; }
+    public void setAuthor(String author) {
+        this.author = author;
+    }
 
-    public String getGenre() { return genre; }
-    public void setGenre(String genre) { this.genre = genre; }
+    public String getName() {
+        return name;
+    }
 
-    public Boolean getIsAudio() { return isAudio; }
-    public void setIsAudio(Boolean isAudio) { this.isAudio = isAudio; }
+    public void setName(String name) {
+        this.name = name;
+    }
 
-    public String getStatus() { return status; }
-    public void setStatus(String status) { this.status = status; }
+    public String getAnnotation() {
+        return annotation;
+    }
 
-    public User getUser() { return user; }
-    public void setUser(User user) { this.user = user; }
+    public void setAnnotation(String annotation) {
+        this.annotation = annotation;
+    }
 
-    public Meeting getMeeting() { return meeting; }
-    public void setMeeting(Meeting meeting) { this.meeting = meeting; }
+    public String getGenre() {
+        return genre;
+    }
+
+    public void setGenre(String genre) {
+        this.genre = genre;
+    }
+
+    public Boolean getIsAudio() {
+        return isAudio;
+    }
+
+    public void setIsAudio(Boolean isAudio) {
+        this.isAudio = isAudio;
+    }
+
+    public BookStatusEnum getStatus() {
+        return status;
+    }
+
+    public void setStatus(BookStatusEnum status) {
+        this.status = status;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public Meeting getMeeting() {
+        return meeting;
+    }
+
+    public void setMeeting(Meeting meeting) {
+        this.meeting = meeting;
+    }
 }
