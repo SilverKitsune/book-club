@@ -28,11 +28,11 @@ public class Book {
     @Enumerated(EnumType.STRING)
     private BookStatusEnum status = BookStatusEnum.UNREAD;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "meeting_id")
     private Meeting meeting;
 

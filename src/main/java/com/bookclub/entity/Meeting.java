@@ -3,6 +3,7 @@ package com.bookclub.entity;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(schema = "bookclub", name = "meetings")

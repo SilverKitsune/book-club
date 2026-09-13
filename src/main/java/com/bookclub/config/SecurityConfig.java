@@ -15,13 +15,12 @@ public class SecurityConfig extends VaadinWebSecurity {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        // Разрешаем доступ к REST API без авторизации
         http.authorizeHttpRequests(auth -> auth
                 .requestMatchers("/api/**").permitAll()
         );
-
         super.configure(http);
         setLoginView(http, LoginView.class);
+        http.formLogin(form -> form.defaultSuccessUrl("/main", true));
     }
 
     @Bean
