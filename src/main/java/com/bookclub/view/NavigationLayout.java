@@ -5,6 +5,8 @@ import com.vaadin.flow.component.applayout.DrawerToggle;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.html.H1;
+import com.vaadin.flow.component.icon.Icon;
+import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -18,7 +20,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
-
 
 @PermitAll
 public class NavigationLayout extends AppLayout implements RouterLayout {
@@ -35,9 +36,12 @@ public class NavigationLayout extends AppLayout implements RouterLayout {
         addToNavbar(header);
 
         SideNav nav = new SideNav();
-        nav.addItem(new SideNavItem("Встречи", MeetingView.class));
-        nav.addItem(new SideNavItem("Книги", BookView.class));
 
+        SideNavItem mainItem = new SideNavItem("Главная страница", "/main", new Icon(VaadinIcon.HOME));
+        SideNavItem meetingItem = new SideNavItem("Встречи", "/meeting", new Icon(VaadinIcon.USER_HEART));
+        SideNavItem bookItem = new SideNavItem("Книги", "/book", new Icon(VaadinIcon.BOOK));
+
+        nav.addItem(mainItem, meetingItem, bookItem);
 
         Button logout = new Button("Выйти", e -> logout());
         logout.addThemeVariants(ButtonVariant.LUMO_ERROR);
