@@ -21,6 +21,9 @@ public class SecurityConfig extends VaadinWebSecurity {
         super.configure(http);
         setLoginView(http, LoginView.class);
         http.formLogin(form -> form.defaultSuccessUrl("/main", true));
+        http.csrf(csrf -> csrf
+                .ignoringRequestMatchers("/api/**")
+        );
     }
 
     @Bean

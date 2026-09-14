@@ -8,8 +8,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-//TODO Проверить, что там с запросами
-
 @RestController
 @RequestMapping("/api/books")
 public class BookController {
