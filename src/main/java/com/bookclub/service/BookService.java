@@ -44,4 +44,9 @@ public class BookService {
     public List<Book> findByStatus(BookStatusEnum status) {
         return bookRepository.findByStatus(status);
     }
+
+    public List<Book> findAllWithUser() {
+        return bookRepository.findAllWithUser();
+    }
+
 }
