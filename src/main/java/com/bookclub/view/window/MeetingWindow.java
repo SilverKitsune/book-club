@@ -52,8 +52,19 @@ public class MeetingWindow extends Dialog {
         Button cancel = new Button("Отмена", e -> close());
         Button save = new Button("Сохранить", e -> save());
         save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        if (meeting != null) {
+            Button delete = new Button("Удалить", e -> deleteMeeting());
+            delete.addThemeVariants(ButtonVariant.LUMO_ERROR);
+            getFooter().add(delete, cancel, save);
+        } else {
+            getFooter().add(cancel, save);
+        }
+    }
 
-        getFooter().add(cancel, save);
+    private void deleteMeeting() {
+        meetingService.deleteById(meeting.getId());
+        onClose.run();
+        close();
     }
 
     private void save() {

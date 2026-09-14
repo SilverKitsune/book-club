@@ -69,9 +69,21 @@ public class BookWindow extends Dialog {
 
         Button cancel = new Button("Отмена", e -> close());
         Button save = new Button("Сохранить", e -> save());
-        save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        save.addThemeVariants(ButtonVariant.LUMO_SUCCESS);
+        if (book != null) {
+            Button delete = new Button("Удалить", e -> deleteBook());
+            delete.addThemeVariants(ButtonVariant.LUMO_ERROR);
+            getFooter().add(delete, cancel, save);
+        } else {
+            getFooter().add(cancel, save);
+        }
 
-        getFooter().add(cancel, save);
+    }
+
+    private void deleteBook() {
+        bookService.deleteById(book.getId());
+        onClose.run();
+        close();
     }
 
     private void save() {
@@ -80,7 +92,7 @@ public class BookWindow extends Dialog {
             name.setErrorMessage("Название обязательно");
             return;
         }
-        if(book == null) {
+        if (book == null) {
             book = new Book();
             book.setUser(currentUser);
         }

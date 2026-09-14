@@ -11,6 +11,8 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.Route;
 import jakarta.annotation.security.PermitAll;
 
+import java.time.format.DateTimeFormatter;
+
 @Route(value = "meeting", layout = NavigationLayout.class)
 @PermitAll
 public class MeetingView extends VerticalLayout {
@@ -24,9 +26,10 @@ public class MeetingView extends VerticalLayout {
         setPadding(true);
         setSpacing(true);
 
-        grid.addColumn(Meeting::getDateTime).setHeader("Дата проведения");
-        grid.addColumn(Meeting::getStatus).setHeader("Статус");
+        grid.addColumn(meeting -> meeting.getDateTime().format(DateTimeFormatter.ofPattern("dd.MM.yy HH:mm")))
+                .setHeader("Дата проведения");
         grid.addColumn(Meeting::getPlace).setHeader("Место");
+        grid.addColumn(Meeting::getStatus).setHeader("Статус");
 
         grid.setItems(meetingService.findAll());
         grid.setSizeFull();
