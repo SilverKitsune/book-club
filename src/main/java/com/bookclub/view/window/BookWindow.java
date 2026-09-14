@@ -8,7 +8,7 @@ import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.formlayout.FormLayout;
-import com.vaadin.flow.component.textfield.IntegerField;
+import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.textfield.TextField;
 
@@ -16,22 +16,27 @@ public class BookWindow extends Dialog {
 
     private final BookService bookService;
     private final Book book;
+    private final Runnable onClose;
 
     private final TextField name = new TextField("Название");
     private final TextField author = new TextField("Автор");
     private final TextField genre = new TextField("Жанр");
     private final TextArea annotation = new TextArea("Аннотация");
     private final ComboBox<BookStatusEnum> status = new ComboBox<>("Статус");
-    private final IntegerField rating = new IntegerField("Оценка");
 
-    public BookWindow(Book book, BookService bookService) {
+    public BookWindow(Book book, BookService bookService, Runnable onClose) {
         this.bookService = bookService;
         this.book = book != null ? book : new Book();
+        this.onClose = onClose;
 
         setHeaderTitle(book == null ? "Новая книга" : "Редактирование книги");
         setWidth("500px");
 
-        // Заполняем поля
+        Button closeButton = new Button(new Icon("lumo", "cross"),
+                (e) -> this.close());
+        closeButton.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
+        getHeader().add(closeButton);
+
         name.setRequired(true);
         name.setWidthFull();
         author.setWidthFull();
@@ -41,11 +46,7 @@ public class BookWindow extends Dialog {
         status.setItems(BookStatusEnum.values());
         status.setItemLabelGenerator(BookStatusEnum::getName);
         status.setWidthFull();
-        rating.setMin(1);
-        rating.setMax(5);
-        rating.setWidthFull();
 
-        // Если редактируем — заполняем текущими данными
         if (book != null) {
             name.setValue(book.getName() != null ? book.getName() : "");
             author.setValue(book.getAuthor() != null ? book.getAuthor() : "");
@@ -54,7 +55,7 @@ public class BookWindow extends Dialog {
             status.setValue(book.getStatus());
         }
 
-        FormLayout form = new FormLayout(name, author, genre, status, rating, annotation);
+        FormLayout form = new FormLayout(name, author, genre, status, annotation);
         form.setResponsiveSteps(
                 new FormLayout.ResponsiveStep("0", 1),
                 new FormLayout.ResponsiveStep("400px", 2)
@@ -63,7 +64,6 @@ public class BookWindow extends Dialog {
 
         add(form);
 
-        // Кнопки
         Button cancel = new Button("Отмена", e -> close());
         Button save = new Button("Сохранить", e -> save());
         save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
@@ -83,10 +83,9 @@ public class BookWindow extends Dialog {
         book.setGenre(genre.getValue());
         book.setAnnotation(annotation.getValue());
         book.setStatus(status.getValue());
-        // rating не входит в сущность Book, но если добавишь — раскомментируй
-        // book.setRating(rating.getValue());
 
         bookService.save(book);
+        onClose.run();
         close();
     }
 }

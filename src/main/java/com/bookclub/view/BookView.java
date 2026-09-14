@@ -3,7 +3,10 @@ package com.bookclub.view;
 import com.bookclub.entity.Book;
 import com.bookclub.service.BookService;
 import com.bookclub.view.window.BookWindow;
+import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.Route;
 import jakarta.annotation.security.PermitAll;
@@ -25,23 +28,27 @@ public class BookView extends VerticalLayout
         grid.addColumn(Book::getName).setHeader("Название");
         grid.addColumn(Book::getAuthor).setHeader("Автор");
         grid.addColumn(Book::getGenre).setHeader("Жанр");
-        grid.addColumn(Book::getStatus).setHeader("Статус");
+        grid.addColumn(book -> book.getStatus().getName()).setHeader("Статус");
+        grid.addColumn(book -> book.getUser().getLogin()).setHeader("Добавил");
 
-        grid.setItems(bookService.findAll());
+        grid.setItems(bookService.findAllWithUser());
         grid.setSizeFull();
-        grid.addItemClickListener(bookItemClickEvent -> {
-            BookWindow window = new BookWindow(bookItemClickEvent.getItem(), this.bookService);
-            window.open();
-            window.addDialogCloseActionListener(dialogCloseActionEvent -> {
-                refreshGrid();
-                window.close();
-            });
-        });
+        grid.addItemClickListener(bookItemClickEvent -> openWindow(bookItemClickEvent.getItem()));
+        grid.addThemeVariants(GridVariant.LUMO_COLUMN_BORDERS, GridVariant.LUMO_ROW_STRIPES);
 
-        add(grid);
+        Button addNew = new Button("Добавить книгу", e -> openWindow(null));
+        addNew.setWidthFull();
+        addNew.addThemeVariants(ButtonVariant.LUMO_PRIMARY, ButtonVariant.LUMO_SUCCESS);
+
+        add(addNew, grid);
+    }
+
+    private void openWindow(Book book) {
+        BookWindow window = new BookWindow(book, this.bookService, this::refreshGrid);
+        window.open();
     }
 
     private void refreshGrid() {
-        grid.setItems(bookService.findAll());
+        grid.setItems(bookService.findAllWithUser());
     }
 }

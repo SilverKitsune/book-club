@@ -7,23 +7,31 @@ import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.datetimepicker.DateTimePicker;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.formlayout.FormLayout;
+import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.textfield.TextField;
 
 public class MeetingWindow extends Dialog {
 
     private final MeetingService meetingService;
     private final Meeting meeting;
+    private final Runnable onClose;
 
     private final DateTimePicker dateTime = new DateTimePicker("Дата и время");
     private final TextField place = new TextField("Место");
     private final TextField status = new TextField("Статус");
 
-    public MeetingWindow(Meeting meeting, MeetingService meetingService) {
+    public MeetingWindow(Meeting meeting, MeetingService meetingService, Runnable onClose) {
         this.meetingService = meetingService;
         this.meeting = meeting != null ? meeting : new Meeting();
+        this.onClose = onClose;
 
         setHeaderTitle(meeting == null ? "Новая встреча" : "Редактирование встречи");
         setWidth("500px");
+
+        Button closeButton = new Button(new Icon("lumo", "cross"),
+                (e) -> this.close());
+        closeButton.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
+        getHeader().add(closeButton);
 
         dateTime.setRequiredIndicatorVisible(true);
         dateTime.setWidthFull();
@@ -60,6 +68,7 @@ public class MeetingWindow extends Dialog {
         meeting.setStatus(status.getValue());
 
         meetingService.save(meeting);
+        onClose.run();
         close();
     }
 }
