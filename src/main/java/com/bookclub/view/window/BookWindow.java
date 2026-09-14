@@ -2,6 +2,7 @@ package com.bookclub.view.window;
 
 import com.bookclub.entity.Book;
 import com.bookclub.entity.BookStatusEnum;
+import com.bookclub.entity.User;
 import com.bookclub.service.BookService;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
@@ -15,7 +16,8 @@ import com.vaadin.flow.component.textfield.TextField;
 public class BookWindow extends Dialog {
 
     private final BookService bookService;
-    private final Book book;
+    private Book book;
+    private final User currentUser;
     private final Runnable onClose;
 
     private final TextField name = new TextField("Название");
@@ -24,9 +26,10 @@ public class BookWindow extends Dialog {
     private final TextArea annotation = new TextArea("Аннотация");
     private final ComboBox<BookStatusEnum> status = new ComboBox<>("Статус");
 
-    public BookWindow(Book book, BookService bookService, Runnable onClose) {
+    public BookWindow(Book book, User currentUser, BookService bookService, Runnable onClose) {
         this.bookService = bookService;
-        this.book = book != null ? book : new Book();
+        this.book = book;
+        this.currentUser = currentUser;
         this.onClose = onClose;
 
         setHeaderTitle(book == null ? "Новая книга" : "Редактирование книги");
@@ -77,7 +80,10 @@ public class BookWindow extends Dialog {
             name.setErrorMessage("Название обязательно");
             return;
         }
-
+        if(book == null) {
+            book = new Book();
+            book.setUser(currentUser);
+        }
         book.setName(name.getValue());
         book.setAuthor(author.getValue());
         book.setGenre(genre.getValue());

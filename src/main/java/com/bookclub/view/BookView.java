@@ -1,7 +1,9 @@
 package com.bookclub.view;
 
 import com.bookclub.entity.Book;
+import com.bookclub.entity.User;
 import com.bookclub.service.BookService;
+import com.bookclub.service.UserService;
 import com.bookclub.view.window.BookWindow;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
@@ -10,16 +12,19 @@ import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.Route;
 import jakarta.annotation.security.PermitAll;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 @Route(value = "book", layout = NavigationLayout.class)
 @PermitAll
 public class BookView extends VerticalLayout
 {
     private final BookService bookService;
+    private final UserService userService;
     private final Grid<Book> grid = new Grid<>(Book.class, false);
 
-    public BookView(BookService bookService) {
+    public BookView(BookService bookService, UserService userService) {
         this.bookService = bookService;
+        this.userService = userService;
 
         setSizeFull();
         setPadding(true);
@@ -44,11 +49,16 @@ public class BookView extends VerticalLayout
     }
 
     private void openWindow(Book book) {
-        BookWindow window = new BookWindow(book, this.bookService, this::refreshGrid);
+        BookWindow window = new BookWindow(book, getCurrentUser(), this.bookService, this::refreshGrid);
         window.open();
     }
 
     private void refreshGrid() {
         grid.setItems(bookService.findAllWithUser());
+    }
+
+    private User getCurrentUser() {
+        String login = SecurityContextHolder.getContext().getAuthentication().getName();
+        return userService.findByLogin(login);
     }
 }
